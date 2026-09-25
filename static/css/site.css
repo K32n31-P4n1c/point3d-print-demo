@@ -9,3 +9,19 @@
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}}
 
 @media(pointer:coarse){.swatch{width:40px;height:40px}.swatches{gap:12px}.viewer-toolbar button{min-height:44px}.languages a{padding:10px 4px}}
+
+/* The poster must disappear behind the transparent WebGL canvas. */
+#viewer [hidden]{display:none!important}
+.inventory-add{padding:26px 0 30px;border-block:1px solid var(--line);margin-bottom:28px}
+.inventory-add-heading{display:flex;gap:24px;align-items:baseline;flex-wrap:wrap;margin-bottom:20px}
+.inventory-add h2{font-size:24px;margin:0}
+.inventory-add-heading p{font-size:12px;margin:0;max-width:680px}
+.inventory-add .filament-fields{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px}
+.inventory-add .field{margin:0}
+.inventory-add .checkbox-field{display:flex;gap:12px;align-items:center}
+.inventory-add .checkbox-field label{margin:0}
+.inventory-add .checkbox-field input{flex-shrink:0}
+.inventory-add .color-preview{margin-block:18px}
+@media(max-width:1050px){.inventory-add .filament-fields{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:650px){.inventory-add .filament-fields{grid-template-columns:repeat(2,minmax(0,1fr))}.inventory-add-heading{gap:10px}}
+@media(max-width:380px){.inventory-add .filament-fields{grid-template-columns:1fr}}
