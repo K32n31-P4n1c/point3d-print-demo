@@ -1,10 +1,10 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="mk">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#111014">
   <meta name="description" content="Од мала скица до нешто што можеш да го држиш. Избери модел, додај своја боја и остави го печатењето на нас.">
-  <title>За демото — Point3D Print</title>
+  <title>DEMO · Инвентар за филаменти — Point3D</title>
   <link rel="icon" href="/point3d-print-demo/static/img/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/point3d-print-demo/static/css/site.css">
 
@@ -18,20 +18,98 @@
 </header>
 <div class="wrap demo-banner">Јавна демонстрација · Без нарачки и внесување лични податоци</div>
 
-<main id="main"><section class="wrap section narrow">
-<p class="eyebrow">POINT3D PRINT / DEMO</p>
 
-<h1 class="page-title">За проектот.</h1>
-<p class="intro">Ова е јавна демонстрација на дизајнот и 3Д конфигураторот на Поинт3Д принт. Можеш да ги ротираш моделите, да зумираш и да ги испробаш боите.</p>
-<p>На оваа демо-страница не се испраќаат барања, не се прикачуваат слики и не се внесуваат лични податоци.</p>
-<h2>Пристап до инвентарот</h2>
-<p>Приватниот инвентар работи во целосната Python апликација на компјутерот на сопственикот. Најавата и базата не се хостирани на GitHub Pages.</p>
-<p>Ако ја имаш локалната апликација, стартувај го серверот, па отвори:</p>
-<p><a class="text-link" href="http://127.0.0.1:8000/mk/studio/inventory/">Локален инвентар ↗</a></p>
-<p class="muted">Овој линк работи само на компјутерот на кој работи апликацијата. Потребен е админ-профил создаден локално од сопственикот.</p>
+<main id="main">
+<section class="wrap section studio" id="pages-studio">
+  <h1 class="page-title">Демо администрација</h1>
+  <p class="notice">Јавно демо со измислени податоци, без најава. Промените се чуваат само во овој прелистувач и не влијаат на вистинскиот инвентар или на јавниот каталог. Не внесувај лични податоци.</p>
+  <nav class="studio-nav" aria-label="Demo"><a href="#inventory">Инвентар за филаменти</a><a href="#models">Модели</a><a href="#requests">Барања</a><button type="button" id="reset-demo">Врати тест-податоци</button></nav>
+  <p id="demo-status" role="status"></p>
+  <div id="inventory-panel">
+    <section class="inventory-add" id="add-filament">
+      <h2 id="form-heading">Додај филамент</h2><p class="muted">Познатите имиња се пополнуваат автоматски. За непозната нијанса избери боја рачно.</p>
+      <form id="demo-filament-form">
 
-<a class="button" href="/point3d-print-demo/mk/models/">Истражи ги моделите ↗</a>
-</section></main>
+<div class="filament-fields">
+
+  <div class="field">
+    <label for="id_material">Материјал</label><select name="material" required id="id_material">
+  <option value="" selected>---------</option>
+
+  <option value="1">PLA</option>
+
+  <option value="2">PETG</option>
+
+  <option value="3">ABS</option>
+
+  <option value="4">ASA</option>
+
+  <option value="5">TPU</option>
+
+</select>
+  </div>
+
+  <div class="field">
+    <label for="id_brand">Бренд</label><select name="brand" required id="id_brand">
+  <option value="" selected>---------</option>
+
+  <option value="1">Polyterra</option>
+
+  <option value="2">SnapMaker</option>
+
+  <option value="3">Esun</option>
+
+  <option value="4">Gembird</option>
+
+</select>
+  </div>
+
+  <div class="field">
+    <label for="id_color_name">Име на бојата</label><input type="text" name="color_name" maxlength="100" required id="id_color_name">
+  </div>
+
+  <div class="field">
+    <label for="id_hex_color">Примерок на бојата (HEX)</label><input type="text" name="hex_color" placeholder="#FFE600" maxlength="7" id="id_hex_color">
+  </div>
+
+  <div class="field">
+    <label for="id_level">Количина</label><select name="level" id="id_level">
+  <option value="full" selected>Full</option>
+
+  <option value="medium">medium</option>
+
+  <option value="low">low</option>
+
+  <option value="empty">empty</option>
+
+</select>
+  </div>
+
+</div>
+<div class="color-preview">
+  <input type="color" id="color-picker" aria-label="Боја" value="#FFE600">
+  <span id="color-status" role="status"></span>
+</div>
+
+        <button class="button" type="submit">Зачувај</button>
+        <button type="button" id="cancel-edit" hidden>Откажи</button>
+      </form>
+    </section>
+    <div class="filters inventory-filters" id="demo-filters">
+      <label>Пребарај филамент…<input id="stock-search" type="search"></label>
+      <label>Материјал<select id="filter-material"><option value="">Сите</option><option>PLA</option><option>PETG</option><option>ABS</option><option>ASA</option><option>TPU</option></select></label>
+      <label>Бренд<select id="filter-brand"><option value="">Сите</option><option>Polyterra</option><option>SnapMaker</option><option>Esun</option><option>Gembird</option></select></label>
+      <label>Количина<select id="filter-level"><option value="">Сите</option><option value="full">Full</option><option value="medium">medium</option><option value="low">low</option><option value="empty">empty</option></select></label>
+      <label>Сортирање<select id="filter-sort"><option value="asc">Бренд А–Ш</option><option value="desc">Бренд Ш–А</option></select></label>
+    </div>
+    <div class="table-scroll"><table><thead><tr><th>Материјал</th><th>Бренд</th><th>Боја</th><th>Количина</th><th>Уреди</th></tr></thead><tbody id="demo-stock"></tbody></table></div>
+  </div>
+  <div id="models-panel" hidden><h2>Модели</h2><p class="muted">Пробај промена на име и статус. GLB и фотографиите во ова демо се фиксни тест-модели.</p><div id="demo-models" class="form-grid"></div></div>
+  <div id="requests-panel" hidden><h2>Барања</h2><div id="demo-requests"></div></div>
+  <noscript><p class="notice">JavaScript is required for this interactive demo.</p></noscript>
+</section>
+<script id="studio-seed" type="application/json">{"version": 1, "colors": {"yellow": "#FFE600", "\u0436\u043e\u043b\u0442\u0430": "#FFE600", "\u0436\u043e\u043b\u0442\u043e": "#FFE600", "pink": "#FF4DB8", "\u0440\u043e\u0437\u043e\u0432\u0430": "#FF4DB8", "violet": "#9B87FF", "purple": "#9B87FF", "\u0432\u0438\u043e\u043b\u0435\u0442\u043e\u0432\u0430": "#9B87FF", "white": "#F7F4FA", "\u0431\u0435\u043b\u0430": "#F7F4FA", "black": "#242329", "\u0446\u0440\u043d\u0430": "#242329", "graphite": "#39373F", "\u0433\u0440\u0430\u0444\u0438\u0442": "#39373F", "ivory": "#EEE8D9", "\u0441\u043b\u043e\u043d\u043e\u0432\u0430 \u043a\u043e\u0441\u043a\u0430": "#EEE8D9", "red": "#E84242", "\u0446\u0440\u0432\u0435\u043d\u0430": "#E84242", "blue": "#3388DD", "\u0441\u0438\u043d\u0430": "#3388DD", "green": "#42A86A", "\u0437\u0435\u043b\u0435\u043d\u0430": "#42A86A", "orange": "#FF922E", "\u043f\u043e\u0440\u0442\u043e\u043a\u0430\u043b\u043e\u0432\u0430": "#FF922E", "grey": "#99969F", "gray": "#99969F", "\u0441\u0438\u0432\u0430": "#99969F", "brown": "#805A40", "\u043a\u0430\u0444\u0435\u0430\u0432\u0430": "#805A40"}, "filaments": [{"id": 2, "color_name": "Pink", "hex_color": "#FF4DB8", "level": "medium", "material": "PLA", "brand": "Esun"}, {"id": 5, "color_name": "Graphite", "hex_color": "#39373F", "level": "full", "material": "PLA", "brand": "Gembird"}, {"id": 4, "color_name": "Ivory", "hex_color": "#EEE8D9", "level": "full", "material": "PLA", "brand": "Polyterra"}, {"id": 1, "color_name": "Yellow", "hex_color": "#FFE600", "level": "full", "material": "PLA", "brand": "Polyterra"}, {"id": 3, "color_name": "Violet", "hex_color": "#9B87FF", "level": "empty", "material": "PLA", "brand": "SnapMaker"}], "models": [{"id": 1, "name": "Spiral planter", "published": true}, {"id": 2, "name": "Angle stand", "published": true}, {"id": 3, "name": "Desk organizer", "published": true}], "requests": [{"reference": "DEMO-001", "description": "DEMO: 2 phone stands / 2 test models", "status": "new", "price": "", "notes": ""}]}</script>
+</main>
 <footer class="site-footer wrap"><a class="logo" href="/point3d-print-demo/mk/">POINT<span class="yellow">3D</span><small>PRINT</small></a><p>Твоите идеи. Нашите слоеви.</p><div><a href="/point3d-print-demo/mk/studio/inventory/">Администрација ↗</a><small>© 2026 Point3D Print</small></div></footer>
-
+<script src="/point3d-print-demo/static/js/pages-studio.js" defer></script>
 </body></html>
