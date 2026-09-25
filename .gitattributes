@@ -1,0 +1,5 @@
+* text=auto eol=lf
+*.png -text
+*.glb -text
+*.woff2 -text
+static/vendor/** -whitespace linguist-vendored
