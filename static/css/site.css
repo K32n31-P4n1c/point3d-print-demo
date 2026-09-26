@@ -24,3 +24,5 @@
 @media(max-width:380px){.inventory-add .filament-fields{grid-template-columns:1fr}}
 
 .level.empty{color:var(--muted);border-color:#534b5e;background:var(--surface)}
+
+.storage-controls{margin-top:16px}.storage-controls [hidden]{display:none!important}.storage-photo{margin:24px 0 0}.storage-photo img{width:100%;height:auto;border-radius:6px}.storage-photo figcaption{font-size:13px;color:var(--muted);margin-top:10px}

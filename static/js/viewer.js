@@ -1,12 +1,14 @@
+import { setupStorage } from './storage-view.js';
 const host = document.querySelector('#viewer');
 const status = document.querySelector('#viewer-status');
 const language = host.dataset.language;
 const mk = language === 'mk';
 let config, renderer, scene, camera, controls, model, THREE, initialPosition;
-let activePart;
+let activePart, storageView;
 const selections = new Map();
 const error = () => {
   status.textContent = host.dataset.fallback;
+  storageView?.stop();
   const poster = document.querySelector('#viewer-poster');
   if (poster) poster.hidden = false;
   if (renderer) renderer.domElement.hidden = true;
@@ -127,6 +129,7 @@ async function start3D() {
   if (poster) poster.hidden = true;
   status.textContent = '';
   for (const part of config.parts) setColor(part,selections.get(part.id));
+  storageView=setupStorage({THREE,model,camera,controls,render,button:document.querySelector('#toggle-storage'),mk});
   const raycaster = new THREE.Raycaster();
   let down;
   renderer.domElement.addEventListener('pointerdown',e => {down={x:e.clientX,y:e.clientY};});
@@ -152,9 +155,9 @@ async function start3D() {
     else return;
     e.preventDefault();camera.position.setFromSpherical(spherical).add(controls.target);controls.update();render();
   });
-  document.querySelector('#reset-view').addEventListener('click',()=>{camera.position.copy(initialPosition);controls.target.set(0,0,0);controls.update();render();});
+  document.querySelector('#reset-view').addEventListener('click',()=>{storageView?.setOpen(false,true);camera.position.copy(initialPosition);controls.target.set(0,0,0);controls.update();render();});
   renderer.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();error();});
-  window.point3dViewer={get camera(){return camera;},get model(){return model;},get renderer(){return renderer;}};
+  window.point3dViewer={get camera(){return camera;},get model(){return model;},get renderer(){return renderer;},get storage(){return storageView;}};
 }
 
 try {
