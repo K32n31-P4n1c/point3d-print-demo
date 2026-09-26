@@ -1,4 +1,4 @@
-﻿/** Removable storage lid; coordinates are millimetres in the authored model. */
+/** Removable storage lid; coordinates are millimetres in the authored model. */
 export function setupStorage({THREE, model, camera, controls, render, button, mk}) {
   const base=model.getObjectByName('Base'), hat=model.getObjectByName('Hat'), body=model.getObjectByName('Body');
   const data=base?.userData.storage;
@@ -27,8 +27,6 @@ export function setupStorage({THREE, model, camera, controls, render, button, mk
     positions.needsUpdate=true;base.geometry.computeBoundingBox();base.geometry.computeBoundingSphere();
     hat.position.y=originalHat+shift;body.position.y=originalBody+shift;
     sticks.visible=value>0;
-    const focusDelta=(value-progress)*lift*model.scale.y*.5;
-    controls.target.y+=focusDelta;camera.position.y+=focusDelta;
     progress=value;controls.update();render();
   }
   function setOpen(value,instant=false){
@@ -38,7 +36,7 @@ export function setupStorage({THREE, model, camera, controls, render, button, mk
     const from=progress,to=open?1:0;
     if(instant||reduced.matches){apply(to);return;}
     const beginning=performance.now();
-    function step(now){const t=Math.min((now-beginning)/650,1);apply(from+(to-from)*(t*t*(3-2*t)));if(t<1)frame=requestAnimationFrame(step);}
+    function step(now){const t=Math.min((now-beginning)/950,1);apply(from+(to-from)*(t*t*(3-2*t)));if(t<1)frame=requestAnimationFrame(step);}
     frame=requestAnimationFrame(step);
   }
   button.hidden=false;button.disabled=false;

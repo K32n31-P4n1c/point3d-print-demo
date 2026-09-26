@@ -117,7 +117,10 @@ async function start3D() {
   const grid = new THREE.GridHelper(15,24,0x44354f,0x27232c);
   grid.position.y = -bounds.getSize(new THREE.Vector3()).y/2-.025;
   grid.material.transparent = true;grid.material.opacity = .4;scene.add(grid);
-  camera.position.set(4,2.7,5);initialPosition = camera.position.clone();
+  if(model.getObjectByName('Base')?.userData.storage){
+    camera.fov=28;camera.updateProjectionMatrix();camera.position.set(2,2.8,7.2);
+  }else camera.position.set(4,2.7,5);
+  initialPosition = camera.position.clone();
   controls = new OrbitControls(camera,renderer.domElement);
   controls.enableDamping = false;controls.enablePan = false;controls.minDistance = 2.5;controls.maxDistance = 13;
   controls.maxPolarAngle = Math.PI*.9;controls.addEventListener('change',render);
