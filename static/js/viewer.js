@@ -102,7 +102,7 @@ async function start3D() {
   model.traverse(object => {
     if (object.isMesh) {
       if (!object.geometry.attributes.normal) object.geometry.computeVertexNormals();
-      const neutral = material => new THREE.MeshStandardMaterial({color:material.color,roughness:.64,metalness:0,side:THREE.DoubleSide});
+      const neutral = material => new THREE.MeshStandardMaterial({color:object.userData.preview_hex||material.color,roughness:.64,metalness:0,side:THREE.DoubleSide});
       object.material = Array.isArray(object.material) ? object.material.map(neutral) : neutral(object.material);
     }
   });
@@ -119,7 +119,9 @@ async function start3D() {
   grid.material.transparent = true;grid.material.opacity = .4;scene.add(grid);
   if(model.getObjectByName('Base')?.userData.storage){
     camera.fov=28;camera.updateProjectionMatrix();camera.position.set(2,2.8,7.2);
-  }else camera.position.set(4,2.7,5);
+  }else if(model.getObjectByName('Column'))camera.position.set(1,1.8,-6.8);
+  else if(model.getObjectByName('Logo'))camera.position.set(0,4.8,4.4);
+  else camera.position.set(4,2.7,5);
   initialPosition = camera.position.clone();
   controls = new OrbitControls(camera,renderer.domElement);
   controls.enableDamping = false;controls.enablePan = false;controls.minDistance = 2.5;controls.maxDistance = 13;
