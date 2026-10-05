@@ -121,6 +121,7 @@ async function start3D() {
     camera.fov=28;camera.updateProjectionMatrix();camera.position.set(2,2.8,7.2);
   }else if(model.getObjectByName('Column'))camera.position.set(1,1.8,-6.8);
   else if(model.getObjectByName('Logo'))camera.position.set(0,4.8,4.4);
+  else if(model.getObjectByName('Donut')&&model.getObjectByName('Ball'))camera.position.set(0,4.8,-4.4);
   else camera.position.set(4,2.7,5);
   initialPosition = camera.position.clone();
   controls = new OrbitControls(camera,renderer.domElement);
