@@ -1,14 +1,17 @@
 import { setupStorage } from './storage-view.js';
+import { setupBallMotion, setupDiceMotion } from './product-motion.js';
 const host = document.querySelector('#viewer');
 const status = document.querySelector('#viewer-status');
 const language = host.dataset.language;
 const mk = language === 'mk';
 let config, renderer, scene, camera, controls, model, THREE, initialPosition;
-let activePart, storageView;
+let activePart, storageView, ballMotion, diceMotion;
 const selections = new Map();
 const error = () => {
   status.textContent = host.dataset.fallback;
   storageView?.stop();
+  ballMotion?.stop();diceMotion?.stop();
+  host.querySelectorAll('#toggle-storage,#toggle-ball,#roll-dice').forEach(button=>{button.hidden=true;});
   const poster = document.querySelector('#viewer-poster');
   if (poster) poster.hidden = false;
   if (renderer) renderer.domElement.hidden = true;
@@ -122,6 +125,7 @@ async function start3D() {
   }else if(model.getObjectByName('Column'))camera.position.set(1,1.8,-6.8);
   else if(model.getObjectByName('Logo'))camera.position.set(0,4.8,4.4);
   else if(model.getObjectByName('Donut')&&model.getObjectByName('Ball'))camera.position.set(0,4.8,-4.4);
+  else if(model.getObjectByName('Tower'))camera.position.set(4,4.5,5);
   else camera.position.set(4,2.7,5);
   initialPosition = camera.position.clone();
   controls = new OrbitControls(camera,renderer.domElement);
@@ -136,6 +140,8 @@ async function start3D() {
   status.textContent = '';
   for (const part of config.parts) setColor(part,selections.get(part.id));
   storageView=setupStorage({THREE,model,camera,controls,render,button:document.querySelector('#toggle-storage'),mk});
+  ballMotion=setupBallMotion({THREE,model,render,button:document.querySelector('#toggle-ball'),mk});
+  diceMotion=setupDiceMotion({THREE,model,render,button:document.querySelector('#roll-dice'),mk});
   const raycaster = new THREE.Raycaster();
   let down;
   renderer.domElement.addEventListener('pointerdown',e => {down={x:e.clientX,y:e.clientY};});
@@ -161,9 +167,9 @@ async function start3D() {
     else return;
     e.preventDefault();camera.position.setFromSpherical(spherical).add(controls.target);controls.update();render();
   });
-  document.querySelector('#reset-view').addEventListener('click',()=>{storageView?.setOpen(false,true);camera.position.copy(initialPosition);controls.target.set(0,0,0);controls.update();render();});
+  document.querySelector('#reset-view').addEventListener('click',()=>{storageView?.setOpen(false,true);ballMotion?.reset();diceMotion?.reset();camera.position.copy(initialPosition);controls.target.set(0,0,0);controls.update();render();});
   renderer.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();error();});
-  window.point3dViewer={get camera(){return camera;},get model(){return model;},get renderer(){return renderer;},get storage(){return storageView;}};
+  window.point3dViewer={get camera(){return camera;},get model(){return model;},get renderer(){return renderer;},get storage(){return storageView;},get ballMotion(){return ballMotion;},get diceMotion(){return diceMotion;}};
 }
 
 try {
